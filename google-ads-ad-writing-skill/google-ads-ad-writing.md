@@ -81,6 +81,18 @@ Use this logical structure to ensure every ad flows correctly:
 
 ---
 
+## Grammar Standards
+
+All ad copy must follow the grammar rules defined in the **Grammar Writing Skill** (`grammar-skill/grammar-writing.md`). Apply those rules to every headline and description you write or review. Key points relevant to ad copy:
+
+- No em dashes. Use a comma or rewrite the phrase.
+- Avoid AI-isms ("seamless", "innovative", "unlock", "elevate", etc.). Write like a person.
+- Use correct punctuation: only one `!` per description, no `!` in headlines.
+- Check commonly confused words (their/they're, its/it's, affect/effect, etc.).
+- Numbers under 10 are written out in full copy, but numerals are acceptable in short headlines where space is limited.
+
+---
+
 ## Ad Writing Do's
 
 1. **Title Case:** Capitalize the first letter of all major words and all words 4+ letters long. Example: `Award Winning Dentist in Manhattan`
