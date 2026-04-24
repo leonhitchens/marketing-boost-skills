@@ -1,4 +1,4 @@
-# Boost Marketing Skills
+# Marketing Boost Skills
 
 A collection of Claude Code skills built for marketing and advertising work. These skills encode internal processes, copywriting standards, and workflows used across my consulting and media projects.
 
