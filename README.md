@@ -26,7 +26,12 @@ This repo stores Claude Code skills that automate and standardize marketing work
 
 | Skill | Folder | Description |
 |---|---|---|
+| Account Organization | `account-organization-skill/` | Structures, organizes, and audits Google Ads accounts — campaign and ad group layout, keyword segmentation, and preventing ad groups from competing against each other. |
 | Google Ads Ad Writing | `google-ads-ad-writing-skill/` | Writes and reviews Google Search Ads (RSAs) following Ruskin Consulting's internal copy standards — 15 headlines, 4 descriptions, UVP framework, and disapproval rules. |
+| Grammar | `grammar-skill/` | Checks, corrects, and improves written content against Ruskin Consulting's grammar standards — applies to ad copy, client emails, reports, proposals, and any other written deliverable. |
+| Keyword Match Types | `keyword-match-types-skill/` | Explains and applies Google Ads keyword match types and negative match types — broad, phrase, exact, close variants, and guidance on which match type to use in a given situation. |
+| Keyword Research | `keyword-research-skill/` | Builds keyword lists for Google Ads and SEO campaigns using competitor research and intent analysis — uses the Ahrefs MCP connector when available. |
+| Search Terms | `search-terms-skill/` | Evaluates and categorizes Google Ads search terms — deciding whether to add a keyword, add a negative, move to another ad group, or take no action. |
 
 ---
 
