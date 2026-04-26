@@ -26,6 +26,8 @@ This repo stores Claude Code skills that automate and standardize marketing work
 
 | Skill | Folder | Description |
 |---|---|---|
+| Account Check-In (ASH) | `account-checkin-ash-skill/` | Initial Google Ads account onboarding and top-to-bottom audit following the ASH framework (Account Settings and History) — use for new clients or accounts not reviewed in over a year. |
+| Account Check-In (Weekly ACE) | `account-checkin-weekly-skill/` | Recurring weekly Google Ads check-in following the ACE framework (Account, Competition, Edits and Expansion) — covers billing pacing, search terms, impression share, quality scores, ads, competitors, and GA4. |
 | Account Organization | `account-organization-skill/` | Structures, organizes, and audits Google Ads accounts — campaign and ad group layout, keyword segmentation, and preventing ad groups from competing against each other. |
 | Ad Optimization | `ad-optimization-skill/` | Optimizes Google Ads by evaluating Quality Score, Ad Rank, and RSA copy strategy — uses the 3-factor framework (impressions, position, 2-click test) to decide which ads to pause and what to write next. |
 | Google Ads Ad Writing | `google-ads-ad-writing-skill/` | Writes and reviews Google Search Ads (RSAs) following Ruskin Consulting's internal copy standards — 15 headlines, 4 descriptions, UVP framework, and disapproval rules. |
@@ -33,6 +35,32 @@ This repo stores Claude Code skills that automate and standardize marketing work
 | Keyword Match Types | `keyword-match-types-skill/` | Explains and applies Google Ads keyword match types and negative match types — broad, phrase, exact, close variants, and guidance on which match type to use in a given situation. |
 | Keyword Research | `keyword-research-skill/` | Builds keyword lists for Google Ads and SEO campaigns using competitor research and intent analysis — uses the Ahrefs MCP connector when available. |
 | Search Terms | `search-terms-skill/` | Evaluates and categorizes Google Ads search terms — deciding whether to add a keyword, add a negative, move to another ad group, or take no action. |
+
+---
+
+## MCP Servers
+
+Several skills in this repo call external tools through MCP (Model Context Protocol) servers. Here is what each one is, whether it is publicly available, and what you need to do if you want to use these skills yourself.
+
+### Ahrefs
+
+The Ahrefs MCP is used in the keyword research and competitor research steps. Ahrefs provides an official MCP server that anyone with an Ahrefs subscription can connect. See the [Ahrefs MCP documentation](https://ahrefs.com/mcp) for setup instructions.
+
+Skills that use Ahrefs: `keyword-research`, `account-checkin-weekly` (Step 8: Competitor Research).
+
+### Google Ads and Google Analytics (MCP Master Server)
+
+Skills reference a server called `MCP MASTER SERVER` for all Google Ads queries (via Google Ads API / GAQL) and Google Analytics 4 data. This is an internal server used at Ruskin Consulting and is not publicly available.
+
+If you want to use these skills with your own setup, you will need to connect your own Google Ads and GA4 MCP servers and update the tool references in each skill file to match your server name and tool names.
+
+**Community MCP servers to get you started:**
+
+- [Google Ads MCP Server](https://github.com/cohnen/mcp-google-ads) — A community MCP server for querying Google Ads via GAQL. Covers campaigns, keywords, search terms, and performance metrics.
+- [GA4 MCP Server](https://github.com/kilimanjaro2/google-analytics-mcp) — A community MCP server for querying Google Analytics 4 data including traffic, conversions, and sources.
+- [MCP Servers (official directory)](https://github.com/modelcontextprotocol/servers) — The official Model Context Protocol repository listing available servers and the protocol specification.
+
+Once you have your own servers running, find every instance of `MCP MASTER SERVER:gads_search`, `MCP MASTER SERVER:ga4_overview`, and `MCP MASTER SERVER:ga4_sources` in the skill files and replace them with the correct tool names from your own setup.
 
 ---
 
