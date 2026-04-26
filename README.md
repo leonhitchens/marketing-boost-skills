@@ -35,6 +35,8 @@ This repo stores Claude Code skills that automate and standardize marketing work
 | Keyword Match Types | `keyword-match-types-skill/` | Explains and applies Google Ads keyword match types and negative match types — broad, phrase, exact, close variants, and guidance on which match type to use in a given situation. |
 | Keyword Research | `keyword-research-skill/` | Builds keyword lists for Google Ads and SEO campaigns using competitor research and intent analysis — uses the Ahrefs MCP connector when available. |
 | Search Terms | `search-terms-skill/` | Evaluates and categorizes Google Ads search terms — deciding whether to add a keyword, add a negative, move to another ad group, or take no action. |
+| Landing Pages | `landing-pages-skill/` | Builds and audits standalone campaign landing pages — covers page types, the 15-second rule, headline formulas, CTA guidelines, social proof placement, message match, page speed, and thank-you page requirements. |
+| Website Design | `website-design-skill/` | Evaluates and improves client websites against the 20 components of a high-converting site — covers color scheme, Core Web Vitals, mobile-first evaluation, schema markup, and a full audit checklist for technical, content, SEO, and ad campaign readiness. |
 
 ---
 
