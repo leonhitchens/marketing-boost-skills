@@ -55,6 +55,8 @@ Divide `cost_micros` by 1,000,000 for dollars. Then apply the pacing formula:
 If actual spend is above expected: reduce budgets and bids.
 If actual spend is below expected: increase bids.
 
+**Diagnosing underpacing:** Before increasing bids, check Step 5 (Impression Share) first. A campaign that is underpacing AND losing IS to rank has a Quality Score problem, not a bid problem. A campaign underpacing AND losing IS to budget needs a higher budget. Treating the wrong cause wastes time.
+
 If the credit card on file is not working, notify the manager and the client immediately and follow up daily until resolved.
 
 **Notifications:**
@@ -80,12 +82,23 @@ Review every recommendation in the Google Ads Recommendations tab. Apply ones th
 
 **Critical: Check Auto-Apply settings every single week.**
 
-Google has a tendency to silently re-enable auto-apply settings without warning. Only one setting should ever be enabled:
+Google silently re-enables auto-apply settings without warning. The navigation location has also moved over time — as of late 2025 it sits just above the regular recommendations section. Check every week regardless of where it has moved.
 
-- "Remove Conflicting Negative Keywords" — keep ON
-- Everything else — keep OFF
+Only one setting should ever be ON:
 
-Auto-applied changes interfere with manual optimizations and bidding strategies. Unchecked, they can undo weeks of work.
+- "Remove Conflicting Negative Keywords" — this automatically removes negative keywords that are blocking your own ads from showing, which is what you want.
+
+Everything else must be OFF. This includes but is not limited to:
+- Upgrade keywords to broad match
+- Upgrade Smart Bidding strategy
+- Set target CPA or target ROAS automatically
+- Add new keywords
+- Add responsive search ads
+- Expand to Display Network
+- Add callouts or sitelinks automatically
+- Any audience or asset automation
+
+Google uses auto-apply to optimize its own revenue, not yours. Bid strategy changes, keyword additions, and asset changes applied without review can undo weeks of optimization in a single day.
 
 ---
 
@@ -193,6 +206,45 @@ customer_id: [client ID]
 
 ---
 
+### Step 5b: Smart Bidding Health Check
+
+After reviewing Impression Share, check the bid strategy on every campaign. Ruskin uses Smart Bidding on all campaigns. Manual CPC and Enhanced CPC are never used.
+
+**The Smart Bidding progression:**
+
+| Stage | Strategy | Status |
+|---|---|---|
+| 1 | Max Clicks | Starting point for new campaigns. Gets delivery going while Google learns. |
+| 2 | Max Conversions | Move here once the campaign spends consistently and conversions are recording. Needs roughly 30 conversions per month to optimize well. |
+| 3 | tCPA or tROAS | Move here once Max Conversions is stable with enough data to set a reliable target. tCPA for lead gen, tROAS for ecommerce. |
+
+**Each week, ask these questions per campaign:**
+
+- Is the campaign on the right strategy for where it is in the progression?
+- Is a Max Clicks campaign spending well and recording conversions? If yes, consider moving to Max Conversions.
+- Is a Max Conversions campaign hitting at least 30 conversions per month? If no, hold here longer before moving to tCPA/tROAS.
+- Is a tCPA or tROAS campaign struggling to spend or losing conversion volume? If yes, step back to Max Conversions or Max Clicks and restart the progression.
+
+**Use `MCP MASTER SERVER:gads_search` to check current bid strategies:**
+
+```
+resource: campaign
+fields: [
+  [campaign.name](http://campaign.name),
+  campaign.bidding_strategy_type,
+  [campaign.target](http://campaign.target)_[cpa.target](http://cpa.target)_cpa_micros,
+  [campaign.target](http://campaign.target)_[roas.target](http://roas.target)_roas,
+  metrics.conversions,
+  metrics.cost_micros
+]
+conditions: ["[segments.date](http://segments.date) DURING LAST_30_DAYS"]
+customer_id: [client ID]
+```
+
+Note: `campaign.bidding_strategy_type` returns values like `MAXIMIZE_CLICKS`, `MAXIMIZE_CONVERSIONS`, `TARGET_CPA`, `TARGET_ROAS`. Flag any campaign showing `MANUAL_CPC` or `ENHANCED_CPC` as misconfigured.
+
+---
+
 ### Step 6: Quality Scores
 
 If Step 5 showed significant Lost IS due to rank, go through every keyword's Quality Score. Use `MCP MASTER SERVER:gads_search`:
@@ -226,17 +278,17 @@ customer_id: [client ID]
 
 **First:** Check that all active ads are eligible. No disapprovals, no broken final URLs, no policy flags.
 
-**Second:** Go through every ad group and review ad performance. Use the ad-optimization skill for the full three-factor framework (Enough Data, Fair Comparison, 2-Click Test).
+**Second:** Go through every ad group and evaluate ad performance using the ad-optimization skill. That skill contains the full three-factor framework: Enough Data check, Fair Comparison (position check), and the 2-Click Test. Run every ad through all three before deciding to pause it.
 
 Prioritize ad groups where Expected CTR is Below Average from Step 6. For those ad groups:
-- Rewrite the weakest ad with a new approach
-- Make sure the search term is matched in the headline
-- Add more specific unique value propositions
-- Confirm the CTA is clear
+- Rewrite the weakest ad using the google-ads-ad-writing skill for RSA standards
+- Make sure the search term is matched in Headline 1
+- Add more specific unique value propositions in Headlines 2 through 5
+- Confirm the CTA is present in at least one description
 
-**Third:** Check Account-Level Automated Assets. Navigate to Campaigns > Assets > More > Account-level automated assets. Every single toggle must be OFF. Google turns these back on without warning and they will override your copy and strategy.
+**Ad Rotation note:** Campaigns using Smart Bidding (Max Clicks, Max Conversions, tCPA, tROAS) will have ad rotation automatically forced to "Optimize" by Google regardless of what you set. This is expected behavior. Set ad groups to "Do not optimize: Rotate indefinitely" only when you are running a deliberate A/B test and want equal exposure. For all evergreen ad groups, Optimize is fine since Smart Bidding is handling delivery.
 
-Refer to the ad-optimization skill for the full evaluation process and the google-ads-ad-writing skill for RSA writing standards.
+**Third:** Check Account-Level Automated Assets every single week. Navigate to Campaigns > Assets > More > Account-level automated assets. Every toggle must be OFF. Google turns these back on without warning and they directly override your ad copy.
 
 ---
 
@@ -260,7 +312,7 @@ Use what you find to:
 
 ---
 
-### Step 9: GA4 and Website Check
+### Step 9: GA4, Conversion Tracking, and Website Check
 
 Every week, confirm both GA4 and the website are functioning correctly.
 
@@ -279,13 +331,33 @@ Use `MCP MASTER SERVER:ga4_sources` to confirm paid search traffic is showing up
 - Key conversion events are still recording
 - Traffic sources look normal
 
+**Conversion tracking check in Google Ads:**
+
+Pull conversion data for the past 7 days using `MCP MASTER SERVER:gads_search`:
+
+```
+resource: campaign
+fields: [[campaign.name](http://campaign.name), metrics.conversions, metrics.all_conversions, metrics.cost_per_conversion]
+conditions: ["[segments.date](http://segments.date) DURING LAST_7_DAYS"]
+customer_id: [client ID]
+```
+
+If conversions drop to zero or near zero for a campaign that normally converts, investigate immediately. Do not assume it is a slow period until you have ruled out a tracking break. Check the conversion actions in Google Ads, verify the tag is still firing in GA4, and test the form or phone number manually.
+
+**Day-of-week and hour performance check (do this monthly or when diagnosing spend issues):**
+
+Use `MCP MASTER SERVER:gads_search` with `[segments.day](http://segments.day)_of_week` or `segments.hour` to pull performance by time slot. Look for:
+- Days or hours with high spend but zero conversions (consider excluding from the ad schedule)
+- Days or hours with strong conversion rates that could benefit from a bid uplift
+- Service businesses in particular often waste budget on weekends or after hours when nobody answers the phone
+
 **What to check on the website:**
 - No broken pages or 404 errors
 - Forms are submitting correctly
 - Phone numbers and emails are clickable
 - Website formatting is not broken on mobile
 
-If you find an issue with GA4 or the website, flag it to the project manager immediately. Do not wait for the next check-in.
+If you find an issue with GA4, conversion tracking, or the website, flag it to the project manager immediately. Do not wait for the next check-in.
 
 ---
 
@@ -327,11 +399,16 @@ Run through this at the end of every check-in before closing the account:
 - [ ] Keywords reviewed for match type and placement
 - [ ] Negative keywords audited for dangerous blocks
 - [ ] Impression Share reviewed across all campaigns
+- [ ] Bid strategy checked per campaign (Max Clicks, Max Conversions, tCPA, or tROAS — no Manual CPC or Enhanced CPC)
+- [ ] Campaigns on tCPA/tROAS confirmed to have 30+ conversions per month
+- [ ] Any campaign struggling to spend stepped back to Max Clicks to restart progression
 - [ ] Quality Scores reviewed (especially if Lost IS to Rank is high)
 - [ ] All ads confirmed eligible with no disapprovals
-- [ ] Ad performance evaluated using the 3-factor framework
+- [ ] Ad performance evaluated using the 3-factor framework (see ad-optimization skill)
 - [ ] Account-Level Automated Assets confirmed all OFF
 - [ ] Competitor research done if CTR is Below Average
-- [ ] GA4 checked for anomalies and conversion tracking confirmed
+- [ ] GA4 checked for anomalies and conversion events still recording
+- [ ] Conversion tracking verified in Google Ads (no unexplained drop to zero)
 - [ ] Website checked for broken pages and form functionality
+- [ ] Day-of-week performance reviewed if diagnosing spend issues or on monthly cadence
 - [ ] Next week's deliverable written down with a measurable target
