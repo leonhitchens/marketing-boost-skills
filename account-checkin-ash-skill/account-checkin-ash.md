@@ -169,12 +169,31 @@ Go through every campaign and verify these settings:
 | Campaign goal | None selected |
 | Search partners | Disabled (unless budget is hard to spend) |
 | Display expansion | Disabled |
-| Bid strategy | Manual CPC with Enhanced CPC unchecked |
-| Ad rotation | Do not optimize: Rotate ads indefinitely |
+| Bid strategy | Smart Bidding: Max Clicks to start, move to Max Conversions, then tCPA or tROAS (see smart bidding progression below) |
+| Ad rotation | "Do not optimize" to control ad testing manually. Google defaults to "Optimize" — change this to ensure all ads get served and you can apply the ad optimization framework properly. Note: only two options exist as of 2025: "Optimize" and "Do not optimize." |
+| Bid strategy | Smart Bidding (see progression below) — never Manual CPC or Enhanced CPC |
 | Location options (targeted) | People in your targeted locations |
 | Location options (excluded) | People in your excluded locations |
 | Automatically created assets | Off |
 | Language | Correct language(s) for the client's market |
+
+---
+
+### Smart Bidding Progression
+
+Ruskin uses Smart Bidding on all campaigns. Never set a campaign to Manual CPC or Enhanced CPC. The progression for a new campaign is:
+
+| Stage | Strategy | When to Move |
+|---|---|---|
+| 1 | Max Clicks | Start here. Gets impressions and clicks flowing while Google learns the account. Move once the campaign is spending consistently. |
+| 2 | Max Conversions | Move here once the campaign is spending and conversions are being recorded. Google needs roughly 30 conversions per month to optimize well. |
+| 3 | tCPA or tROAS | Move here once Max Conversions is stable and you have enough conversion data to set a reliable target. tCPA for lead gen, tROAS for ecommerce. |
+
+**If spend drops or delivery struggles at any stage:** Move back to Max Clicks and start the progression over. Do not try to push a struggling tCPA or tROAS campaign without enough conversion data. It will starve the campaign of impressions and waste time.
+
+When reviewing a new account during ASH, check every campaign's current bid strategy and flag any that are misconfigured or stuck in the wrong stage.
+
+Note: Enhanced CPC (eCPC) was deprecated by Google in March 2025. Any campaigns still showing eCPC have been automatically converted to Manual CPC. Flag these and move them to the appropriate Smart Bidding strategy immediately.
 
 ---
 
@@ -219,11 +238,11 @@ Locations:
 - [ ] Location targeting options set correctly (people in, not interested in)
 
 Bid Strategy:
-- [ ] Manual CPC with Enhanced CPC disabled
+- [ ] Smart Bidding strategy is set correctly for the campaign stage (Max Clicks, Max Conversions, tCPA, or tROAS)
 - [ ] No automated bidding unless intentional and appropriate
 
 Ad Settings:
-- [ ] Ad rotation set to "Do not optimize: Rotate ads indefinitely"
+- [ ] Ad rotation set to "Do not optimize" on all ad groups being actively tested
 - [ ] Ad schedule set to desired times
 - [ ] Automatically created assets turned off
 
