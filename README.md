@@ -37,6 +37,7 @@ This repo stores Claude Code skills that automate and standardize marketing work
 | Search Terms | `search-terms-skill/` | Evaluates and categorizes Google Ads search terms — deciding whether to add a keyword, add a negative, move to another ad group, or take no action. |
 | Landing Pages | `landing-pages-skill/` | Builds and audits standalone campaign landing pages — covers page types, the 15-second rule, headline formulas, CTA guidelines, social proof placement, message match, page speed, and thank-you page requirements. |
 | Website Design | `website-design-skill/` | Evaluates and improves client websites against the 20 components of a high-converting site — covers color scheme, Core Web Vitals, mobile-first evaluation, schema markup, and a full audit checklist for technical, content, SEO, and ad campaign readiness. |
+| SEO Blog Writing | `seo-blog-writing-skill/` | Researches, outlines, and writes SEO blog posts following the Ruskin Consulting Blog Writing SOP — runs four sequential steps (context, keyword research, outline, write), uses Ahrefs for keyword and competitor research, and delivers a styled .docx file formatted with the client's brand colors ready to paste into WordPress. |
 
 ---
 
