@@ -4,6 +4,22 @@ description: >
   Use this skill when onboarding a new Google Ads client or performing a thorough top-to-bottom account review. Triggers include: "initial account check-in", "perform ash", "run ash", "do ash", "onboard this account", "new client setup", "audit this account from scratch", "first time reviewing this account", "full account audit", or any situation where a new account is being taken over or has not been reviewed in a long time (roughly a year or more). For recurring weekly check-ins use the account-checkin-weekly skill instead.
 ---
 
+## Connector Reference
+
+These are the MCPs used in this skill and when to use each:
+
+| Connector | Tool Prefix | Use For |
+|---|---|---|
+| Google Ads MCP | `Google Ads MCP:search` | All Google Ads queries. Requires `customer_id`. Uses `orderings` (list) not `order_by` (string). |
+| Google Analytics MCP | `Google Analytics MCP:ga4_overview`, `ga4_sources` | GA4 analytics. Requires `propertyId`. |
+| GSC MCP | `GSC MCP:gsc_performance_overview` etc. | Direct Google Search Console queries. Requires `siteUrl`. |
+| Basecamp Railway | `Basecamp Railway:search_projects` etc. | Project management and task tracking. |
+| Ahrefs | `Ahrefs:*` | SEO data, rank tracking, site audit, keyword research. |
+
+**Google Ads MCP parameter note:** The `customer_id` must be passed as a string of digits with no dashes (e.g., `"1234567890"` not `"123-456-7890"`). Use `orderings` as a list (e.g., `["metrics.cost_micros DESC"]`) not `order_by` as a string.
+
+---
+
 # Initial Account Check-In (ASH)
 
 From Ruskin Consulting Training Module 24.
@@ -76,9 +92,9 @@ You are responsible for the success of the landing pages unless the client refus
 ### Step 3: Google Analytics
 
 **What to do:**
-Use `MCP MASTER SERVER:ga4_overview` to pull site traffic data. Set `propertyId` to the client's GA4 property ID. Use a 90-day window for the initial review.
+Use `Google Analytics MCP:ga4_overview` to pull site traffic data. Set `propertyId` to the client's GA4 property ID. Use a 90-day window for the initial review.
 
-Use `MCP MASTER SERVER:ga4_sources` to see traffic by channel. Look at how much comes from paid search vs. organic vs. direct.
+Use `Google Analytics MCP:ga4_sources` to see traffic by channel. Look at how much comes from paid search vs. organic vs. direct.
 
 **What to verify:**
 - Demographics and data collection are enabled
