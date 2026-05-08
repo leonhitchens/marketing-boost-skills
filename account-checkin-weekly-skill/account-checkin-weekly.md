@@ -4,6 +4,22 @@ description: >
   Use this skill for recurring weekly Google Ads account check-ins. Triggers include: "weekly check-in", "weekly account review", "do the weekly check-in for", "ACE the account", "run ACE", "do ACE", "check in on this account", "weekly optimization", or any request to do a regular ongoing review of a Google Ads account. For a brand new account or one not reviewed in over a year, use the account-checkin-ash skill instead.
 ---
 
+## Connector Reference
+
+These are the MCPs used in this skill and when to use each:
+
+| Connector | Tool Prefix | Use For |
+|---|---|---|
+| Google Ads MCP | `Google Ads MCP:search` | All Google Ads queries. Requires `customer_id`. Uses `orderings` (list) not `order_by` (string). |
+| Google Analytics MCP | `Google Analytics MCP:ga4_overview`, `ga4_sources` | GA4 analytics. Requires `propertyId`. |
+| GSC MCP | `GSC MCP:gsc_performance_overview` etc. | Direct Google Search Console queries. Requires `siteUrl`. |
+| Basecamp Railway | `Basecamp Railway:search_projects` etc. | Project management and task tracking. |
+| Ahrefs | `Ahrefs:*` | SEO data, rank tracking, site audit, keyword research. |
+
+**Google Ads MCP parameter note:** The `customer_id` must be passed as a string of digits with no dashes (e.g., `"1234567890"` not `"123-456-7890"`). Use `orderings` as a list (e.g., `["metrics.cost_micros DESC"]`) not `order_by` as a string.
+
+---
+
 # Weekly Account Check-In (ACE)
 
 From Ruskin Consulting Training Module 25.
@@ -39,12 +55,12 @@ Every week these metrics should be moving in the right direction. Use these as y
 
 **Billing check:**
 
-Use `MCP MASTER SERVER:gads_search` to pull this month's total spend:
+Use `Google Ads MCP:search` to pull this month's total spend:
 
 ```
 resource: campaign
 fields: [metrics.cost_micros]
-conditions: ["[segments.date](http://segments.date) DURING THIS_MONTH"]
+conditions: ["segments.date DURING THIS_MONTH"]
 customer_id: [client ID]
 ```
 
@@ -64,7 +80,7 @@ Review all Google Ads notifications (the bell icon). Act on anything sensible. D
 
 **Account overview graphs:**
 
-Use `MCP MASTER SERVER:gads_search` to pull 30-day and 90-day trend data. Review these five metric pairs and check that each is moving in the right direction:
+Use `Google Ads MCP:search` to pull 30-day and 90-day trend data. Review these five metric pairs and check that each is moving in the right direction:
 
 | Graph Pair | What to Look For |
 |---|---|
@@ -106,20 +122,20 @@ Google uses auto-apply to optimize its own revenue, not yours. Bid strategy chan
 
 This is the most important step. Do it every single week without exception.
 
-Use `MCP MASTER SERVER:gads_search` to pull search terms from the past 7 days:
+Use `Google Ads MCP:search` to pull search terms from the past 7 days:
 
 ```
 resource: search_term_view
 fields: [
-  search_term_[view.search](http://view.search)_term,
-  search_term_[view.ad](http://view.ad)_group,
+  search_term_view.search_term,
+  search_term_view.ad_group,
   metrics.clicks,
   metrics.impressions,
   metrics.ctr,
   metrics.conversions,
   metrics.cost_micros
 ]
-conditions: ["[segments.date](http://segments.date) DURING LAST_7_DAYS"]
+conditions: ["segments.date DURING LAST_7_DAYS"]
 order_by: metrics.impressions DESC
 customer_id: [client ID]
 ```
@@ -144,15 +160,15 @@ Review all keywords across every ad group and campaign. For each keyword ask:
 - Is it in the correct match type?
 - Is it in the correct ad group?
 
-Use `MCP MASTER SERVER:gads_search` to pull all active keywords with performance data:
+Use `Google Ads MCP:search` to pull all active keywords with performance data:
 
 ```
 resource: keyword_view
 fields: [
   ad_group_criterion.keyword.text,
   ad_group_criterion.keyword.match_type,
-  ad_[group.name](http://group.name),
-  [campaign.name](http://campaign.name),
+  ad_group.name,
+  campaign.name,
   metrics.clicks,
   metrics.impressions,
   metrics.ctr,
@@ -161,7 +177,7 @@ fields: [
 ]
 conditions: [
   "ad_group_criterion.status = ENABLED",
-  "[segments.date](http://segments.date) DURING LAST_30_DAYS"
+  "segments.date DURING LAST_30_DAYS"
 ]
 customer_id: [client ID]
 ```
@@ -179,19 +195,19 @@ Bad negative keywords are more dangerous than bad keywords. Triple-check every o
 
 ### Step 5: Search Impression Share
 
-Review Impression Share across every campaign. Use `MCP MASTER SERVER:gads_search`:
+Review Impression Share across every campaign. Use `Google Ads MCP:search`:
 
 ```
 resource: campaign
 fields: [
-  [campaign.name](http://campaign.name),
-  [metrics.search](http://metrics.search)_impression_share,
-  [metrics.search](http://metrics.search)_top_impression_share,
-  [metrics.search](http://metrics.search)_absolute_top_impression_share,
-  [metrics.search](http://metrics.search)_rank_lost_impression_share,
-  [metrics.search](http://metrics.search)_budget_lost_impression_share
+  campaign.name,
+  metrics.search_impression_share,
+  metrics.search_top_impression_share,
+  metrics.search_absolute_top_impression_share,
+  metrics.search_rank_lost_impression_share,
+  metrics.search_budget_lost_impression_share
 ]
-conditions: ["[segments.date](http://segments.date) DURING LAST_30_DAYS"]
+conditions: ["segments.date DURING LAST_30_DAYS"]
 customer_id: [client ID]
 ```
 
@@ -225,19 +241,19 @@ After reviewing Impression Share, check the bid strategy on every campaign. Rusk
 - Is a Max Conversions campaign hitting at least 30 conversions per month? If no, hold here longer before moving to tCPA/tROAS.
 - Is a tCPA or tROAS campaign struggling to spend or losing conversion volume? If yes, step back to Max Conversions or Max Clicks and restart the progression.
 
-**Use `MCP MASTER SERVER:gads_search` to check current bid strategies:**
+**Use `Google Ads MCP:search` to check current bid strategies:**
 
 ```
 resource: campaign
 fields: [
-  [campaign.name](http://campaign.name),
+  campaign.name,
   campaign.bidding_strategy_type,
-  [campaign.target](http://campaign.target)_[cpa.target](http://cpa.target)_cpa_micros,
-  [campaign.target](http://campaign.target)_[roas.target](http://roas.target)_roas,
+  campaign.target_cpa.target_cpa_micros,
+  campaign.target_roas.target_roas,
   metrics.conversions,
   metrics.cost_micros
 ]
-conditions: ["[segments.date](http://segments.date) DURING LAST_30_DAYS"]
+conditions: ["segments.date DURING LAST_30_DAYS"]
 customer_id: [client ID]
 ```
 
@@ -247,17 +263,17 @@ Note: `campaign.bidding_strategy_type` returns values like `MAXIMIZE_CLICKS`, `M
 
 ### Step 6: Quality Scores
 
-If Step 5 showed significant Lost IS due to rank, go through every keyword's Quality Score. Use `MCP MASTER SERVER:gads_search`:
+If Step 5 showed significant Lost IS due to rank, go through every keyword's Quality Score. Use `Google Ads MCP:search`:
 
 ```
 resource: keyword_view
 fields: [
   ad_group_criterion.keyword.text,
-  ad_[group.name](http://group.name),
-  [campaign.name](http://campaign.name),
+  ad_group.name,
+  campaign.name,
   ad_group_criterion.quality_info.quality_score,
-  ad_group_criterion.quality_[info.search](http://info.search)_predicted_ctr,
-  ad_group_criterion.quality_[info.ad](http://info.ad)_relevance,
+  ad_group_criterion.quality_info.search_predicted_ctr,
+  ad_group_criterion.quality_info.ad_relevance,
   ad_group_criterion.quality_info.landing_page_experience
 ]
 conditions: ["ad_group_criterion.status = ENABLED"]
@@ -316,7 +332,7 @@ Use what you find to:
 
 Every week, confirm both GA4 and the website are functioning correctly.
 
-Use `MCP MASTER SERVER:ga4_overview` with the past 7 days to check for anything unusual:
+Use `Google Analytics MCP:ga4_overview` with the past 7 days to check for anything unusual:
 
 ```
 propertyId: [client GA4 property ID]
@@ -324,7 +340,7 @@ startDate: [7 days ago]
 endDate: [today]
 ```
 
-Use `MCP MASTER SERVER:ga4_sources` to confirm paid search traffic is showing up and conversion events are firing.
+Use `Google Analytics MCP:ga4_sources` to confirm paid search traffic is showing up and conversion events are firing.
 
 **What to look for in GA4:**
 - No abnormal traffic spikes or drops
@@ -333,12 +349,12 @@ Use `MCP MASTER SERVER:ga4_sources` to confirm paid search traffic is showing up
 
 **Conversion tracking check in Google Ads:**
 
-Pull conversion data for the past 7 days using `MCP MASTER SERVER:gads_search`:
+Pull conversion data for the past 7 days using `Google Ads MCP:search`:
 
 ```
 resource: campaign
-fields: [[campaign.name](http://campaign.name), metrics.conversions, metrics.all_conversions, metrics.cost_per_conversion]
-conditions: ["[segments.date](http://segments.date) DURING LAST_7_DAYS"]
+fields: [campaign.name, metrics.conversions, metrics.all_conversions, metrics.cost_per_conversion]
+conditions: ["segments.date DURING LAST_7_DAYS"]
 customer_id: [client ID]
 ```
 
@@ -346,7 +362,7 @@ If conversions drop to zero or near zero for a campaign that normally converts, 
 
 **Day-of-week and hour performance check (do this monthly or when diagnosing spend issues):**
 
-Use `MCP MASTER SERVER:gads_search` with `[segments.day](http://segments.day)_of_week` or `segments.hour` to pull performance by time slot. Look for:
+Use `Google Ads MCP:search` with `segments.day_of_week` or `segments.hour` to pull performance by time slot. Look for:
 - Days or hours with high spend but zero conversions (consider excluding from the ad schedule)
 - Days or hours with strong conversion rates that could benefit from a bid uplift
 - Service businesses in particular often waste budget on weekends or after hours when nobody answers the phone
