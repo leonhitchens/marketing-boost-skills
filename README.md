@@ -38,6 +38,7 @@ This repo stores Claude Code skills that automate and standardize marketing work
 | Landing Pages | `landing-pages-skill/` | Builds and audits standalone campaign landing pages — covers page types, the 15-second rule, headline formulas, CTA guidelines, social proof placement, message match, page speed, and thank-you page requirements. |
 | Website Design | `website-design-skill/` | Evaluates and improves client websites against the 20 components of a high-converting site — covers color scheme, Core Web Vitals, mobile-first evaluation, schema markup, and a full audit checklist for technical, content, SEO, and ad campaign readiness. |
 | SEO Blog Writing | `seo-blog-writing-skill/` | Researches, outlines, and writes SEO blog posts following the Ruskin Consulting Blog Writing SOP — runs four sequential steps (context, keyword research, outline, write), uses Ahrefs for keyword and competitor research, and delivers a styled .docx file formatted with the client's brand colors ready to paste into WordPress. |
+| Video Content Production | `video-content-production-skill/` | Turns a raw video transcript into a complete publishing and promotion package for The Boost Network's three shows (The Social Ledger, The Marketing Boost, Beyond Giving) — produces YouTube titles, description, chapters, thumbnail concept, show notes, platform-specific social posts for YouTube Community, X, Facebook, LinkedIn, and Instagram, an email newsletter blurb, and key quotes for graphics. |
 
 ---
 
